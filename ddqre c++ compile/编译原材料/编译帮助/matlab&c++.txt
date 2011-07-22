@@ -1,0 +1,38 @@
+int run_main(int argc, const char **argv)
+{
+  int _retval;
+  /* Generate and populate the path_to_component. */
+  char path_to_component[(PATH_MAX*2)+1];
+  separatePathName(argv[0], path_to_component, (PATH_MAX*2)+1);
+  __MCC_ddqre_component_data.path_to_component = path_to_component;
+  __MCC_ddqre_component_data.path_to_component = ".\\";
+  if (!ddqreInitialize()) {
+    return -1;
+  }
+  _retval = mclMain(_mcr_inst, argc, argv, "ddqre", 1);
+  if (_retval == 0 /* no error */) mclWaitForFiguresToDie(NULL);
+  ddqreTerminate();
+  mclTerminateApplication();
+  return _retval;
+}
+
+
+
+int __stdcall WinMain(
+                          HINSTANCE hInstance,
+                          HINSTANCE hPrevInstance,
+                          LPSTR lpCmdLine,
+                          int nShowCmd
+                      )
+{
+    if (!mclInitializeApplication(
+    __MCC_ddqre_component_data.runtime_options,
+    __MCC_ddqre_component_data.runtime_option_count))
+    return 0;
+
+    return mclRunMain(run_main,1,&lpCmdLine);
+}
+
+
+
+libemlrt.lib libmex.lib libut.lib mclmcrrt.lib libeng.lib libmwlapack.lib mclcom.lib mclxlmain.lib libfixedpoint.lib libmwservices.lib mclcommain.lib libdflapack.lib libmat.lib libmx.lib mclmcr.lib 
